@@ -365,7 +365,7 @@ var countryIsoAndNameList = {
                 // placeholder: '-',
 				allowClear: true,
                 ajax: {
-                    url: "https://api.github.com/search/repositories",
+                    url: args.column.jsonEndpoint,
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -390,7 +390,7 @@ var countryIsoAndNameList = {
                     },
                     cache: true
                 },
-                placeholder: 'Search for a repository',
+                placeholder: 'Search...',
                 minimumInputLength: 1,
                 templateResult: formatRepo,
                 templateSelection: formatRepoSelection
@@ -412,12 +412,20 @@ var countryIsoAndNameList = {
         };
         this.loadValue = function (item) {
             // called when entering and leaving the editor
-            defaultValue = item[args.column.field];
-            $input.val(defaultValue);
-            $input[0].defaultValue = defaultValue;
+            arr = JSON.parse(item[args.column.field]);
+            $input.val(arr.id);
+            $input[0].defaultValue = arr.id;
             $input.trigger("change.select2");
         };
         this.serializeValue = function () {
+            arr = $input.select2('data')
+            if (arr.length > 0)
+            {
+                return JSON.stringify({
+                    'id' : $input.val(),
+                    'value':  arr[0].full_name
+                });
+            }
             return $input.val();
         };
         this.applyValue = function (item, state) {
@@ -438,7 +446,7 @@ var countryIsoAndNameList = {
 
     function Select2Formatter(row, cell, value, columnDef, dataContext) {
         // called for every row
-        return columnDef.dataSource[value] || '-';
+        return JSON.parse(value).value || '-';
     }
 </script>
 <script>
@@ -466,8 +474,10 @@ var countryIsoAndNameList = {
     {id: "duration", name: "Duration", field: "duration", editor: Slick.Editors.Text},
     {id: "start", name: "Start", field: "start", minWidth: 60, editor: Slick.Editors.Date},
     {id: "finish", name: "Finish", field: "finish", minWidth: 60, editor: Slick.Editors.Date},
-	{id: "CountryOfOrigin", name: "Country Of Origin", field: "country", minWidth: 200, formatter: Select2Formatter,
-		editor: Select2Editor, dataSource: countryIsoAndNameList }
+    {id: "repository", name: "Repository", field: "repository", minWidth: 200,
+        formatter: Select2Formatter, editor: Select2Editor,
+        jsonEndpoint: "https://api.github.com/search/repositories"
+    }
   ];
   var options = {
     editable: true,
@@ -483,7 +493,7 @@ var countryIsoAndNameList = {
       d["duration"] = "5 days";
       d["start"] = "01/01/2009";
       d["finish"] = "01/05/2009";
-      d["country"] = pickRandomProperty(countryIsoAndNameList);
+      d["repository"] = '{"id": 49712843, "value": "jeasonlzy/okhttp-OkGo"}';
     }
     grid = new Slick.Grid("#myGrid", data, columns, options);
     grid.setSelectionModel(new Slick.CellSelectionModel());
