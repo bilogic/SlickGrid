@@ -197,7 +197,9 @@
             if (value) {
                 obj = JSON.parse(value);
                 res = '<img style="height:100%" src="' + obj.imgsrc + '"/>';
+                res += '<span style="vertical-align:top"> ';
                 res += obj.text + ' <a href="' + obj.href + '">Link</a>';
+                res += '</span>';
                 return res;
             }
             return '-';
