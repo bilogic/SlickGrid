@@ -250,8 +250,10 @@
                 d["duration"] = "5 days";
                 d["start"] = "01/01/2009";
                 d["finish"] = "01/05/2009";
+
+                // for sort abilities, place the pair at the front of the JSON
                 d["repository"] =
-                    '{"id": "263104547", "imgsrc":"https://avatars.githubusercontent.com/u/946010?v=4","text": "bilogic/logitech-unifying-device","href": "https://github.com/bilogic/logitech-unifying-device"}';
+                    '{"text": "bilogic/logitech-unifying-device", "id": "263104547", "imgsrc":"https://avatars.githubusercontent.com/u/946010?v=4","href": "https://github.com/bilogic/logitech-unifying-device"}';
             }
             grid = new Slick.Grid("#myGrid", data, columns, options);
             grid.setSelectionModel(new Slick.CellSelectionModel());
